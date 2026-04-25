@@ -1393,6 +1393,7 @@
             }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -1537,20 +1538,10 @@
                     <p>Shopify Store — Mid-market brand</p>
                 </div>
 
-                <div class="comparison-wrapper">
-                    <div class="comparison-container" id="comparison2">
-                        <img src="images/before.jpg" alt="Before optimization" class="comparison-image before">
-                        <img src="images/after.jpg" alt="After optimization" class="comparison-image after">
-                        <div class="comparison-slider" id="slider2">
-                            <div class="comparison-handle"></div>
-                        </div>
-                        <div class="comparison-labels">
-                            <span class="comparison-label before-label">Before</span>
-                            <span class="comparison-label after-label">After</span>
-                        </div>
-                    </div>
+                <div class="single-image-wrapper" style="position: relative; width: 100%; max-width: 1000px; margin: 0 auto; border-radius: 4px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);">
+                    <img src="images/home-goods-result.jpg" alt="Home Goods Retailer - Optimized Store" style="width: 100%; height: 550px; object-fit: cover; display: block;">
                 </div>
-                <p class="comparison-caption">Drag the slider to compare the before and after transformation</p>
+                <p class="comparison-caption" style="margin-top: 2rem; color: var(--text-muted); font-size: 0.875rem; letter-spacing: 0.05em; text-align: center;">Optimized store design for the Home Goods Retailer</p>
 
                 <div class="case-narrative">
                     <div class="narrative-block">
@@ -1752,7 +1743,7 @@
                     </p>
                     <div class="contact-detail">
                         <strong>Email</strong>
-                        <span>hello@kayeccomelite.com</span>
+                        <span>kayecomelite@gmail.com</span>
                     </div>
                     <div class="contact-detail">
                         <strong>Response</strong>
@@ -1763,24 +1754,33 @@
                         <span>Remote — Worldwide</span>
                     </div>
                 </div>
-                <form class="contact-form" id="contactForm">
+                <form class="contact-form" id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+                    <input type="hidden" name="access_key" value="0a815bb2-f52e-446c-8860-93a4bc7e4af6">
+                    <input type="hidden" name="subject" value="New Message from KayEcomElite Website">
+                    <input type="hidden" name="from_name" value="KayEcomElite Contact Form">
+                    <input type="hidden" name="replyto" value="kayecomelite@gmail.com">
+
                     <div class="form-group">
-                        <input type="text" id="name" placeholder=" " required>
+                        <input type="text" name="name" id="name" placeholder=" " required>
                         <label for="name">Your Name</label>
                     </div>
                     <div class="form-group">
-                        <input type="email" id="email" placeholder=" " required>
+                        <input type="email" name="email" id="email" placeholder=" " required>
                         <label for="email">Email Address</label>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="store" placeholder=" ">
+                        <input type="text" name="store" id="store" placeholder=" ">
                         <label for="store">Store URL (Optional)</label>
                     </div>
                     <div class="form-group">
-                        <textarea id="message" placeholder=" " required></textarea>
+                        <textarea name="message" id="message" placeholder=" " required></textarea>
                         <label for="message">Tell me about your store and goals</label>
                     </div>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
+
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button type="submit" class="btn btn-primary" id="emailBtn">Send via Email</button>
+                        <button type="button" class="btn btn-outline" id="whatsappBtn">Send via WhatsApp</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -1795,7 +1795,7 @@
 
     <script>
         const nav = document.getElementById('nav');
-        
+
         window.addEventListener('scroll', () => {
             if (window.pageYOffset > 50) {
                 nav.classList.add('scrolled');
@@ -1843,7 +1843,7 @@
             const container = document.getElementById(containerId);
             const slider = document.getElementById(sliderId);
             const afterImage = container.querySelector('.comparison-image.after');
-            
+
             let isDragging = false;
 
             function updateSliderPosition(x) {
@@ -1888,20 +1888,19 @@
         }
 
         initComparisonSlider('comparison1', 'slider1');
-        initComparisonSlider('comparison2', 'slider2');
 
         const faqItems = document.querySelectorAll('.faq-item');
 
         faqItems.forEach(item => {
             const question = item.querySelector('.faq-question');
-            
+
             question.addEventListener('click', () => {
                 const isActive = item.classList.contains('active');
-                
+
                 faqItems.forEach(otherItem => {
                     otherItem.classList.remove('active');
                 });
-                
+
                 if (!isActive) {
                     item.classList.add('active');
                 }
@@ -1909,21 +1908,61 @@
         });
 
         const contactForm = document.getElementById('contactForm');
-        
+        const emailBtn = document.getElementById('emailBtn');
+        const whatsappBtn = document.getElementById('whatsappBtn');
+
+        function getFormData() {
+            return {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                store: document.getElementById('store').value,
+                message: document.getElementById('message').value
+            };
+        }
+
+        // Email submission via Web3Forms
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            
-            const btn = contactForm.querySelector('button[type="submit"]');
-            const originalText = btn.textContent;
-            
-            btn.textContent = 'Message Sent!';
-            btn.style.background = 'var(--success)';
-            
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.style.background = '';
-                contactForm.reset();
-            }, 3000);
+
+            emailBtn.textContent = 'Sending...';
+            emailBtn.disabled = true;
+
+            fetch(contactForm.action, {
+                method: 'POST',
+                body: new FormData(contactForm),
+                headers: { 'Accept': 'application/json' }
+            }).then(response => {
+                if (response.ok) {
+                    emailBtn.textContent = 'Message Sent!';
+                    emailBtn.style.background = 'var(--success)';
+                    contactForm.reset();
+                    setTimeout(() => {
+                        emailBtn.textContent = 'Send via Email';
+                        emailBtn.style.background = '';
+                        emailBtn.disabled = false;
+                    }, 3000);
+                } else {
+                    throw new Error('Failed');
+                }
+            }).catch(() => {
+                emailBtn.textContent = 'Error. Try Again.';
+                emailBtn.style.background = 'var(--danger)';
+                emailBtn.disabled = false;
+            });
+        });
+
+        // WhatsApp redirect with pre-filled message
+        whatsappBtn.addEventListener('click', () => {
+            const data = getFormData();
+
+            if (!data.name || !data.email || !data.message) {
+                alert('Please fill in Name, Email, and Message first.');
+                return;
+            }
+
+            const text = `*New inquiry from KayEcomElite website*%0A%0A👤 *Name:* ${encodeURIComponent(data.name)}%0A📧 *Email:* ${encodeURIComponent(data.email)}%0A🛒 *Store:* ${encodeURIComponent(data.store || 'Not provided')}%0A💬 *Message:* ${encodeURIComponent(data.message)}`;
+
+            window.open(`https://wa.me/2349058626660?text=${text}`, '_blank');
         });
 
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
